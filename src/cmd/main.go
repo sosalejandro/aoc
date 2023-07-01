@@ -3,10 +3,18 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/sosalejandro/aoc/src/pkg/2015/day_1"
+	aoc_2015 "github.com/sosalejandro/aoc/src/pkg/2015"
 )
 
 type DayFunc func()
+
+func CreateDayFuncArray(fns []func()) []DayFunc {
+	dayFuncs := make([]DayFunc, len(fns))
+	for i, fn := range fns {
+		dayFuncs[i] = fn
+	}
+	return dayFuncs
+}
 
 // create a cmd program that will run the code for the day and year specified by the user
 func main() {
@@ -32,12 +40,11 @@ func main() {
 	runYear(*year, *day)
 }
 
+// runYear runs the code for the specified year
 func runYear(year int, day int) {
 	switch year {
 	case 2015:
-		runDay(year, day, []DayFunc{
-			day_1.Run,
-		})
+		runDay(year, day, CreateDayFuncArray(aoc_2015.Functions))
 	case 2016:
 		runDay(year, day, []DayFunc{})
 	case 2017:
@@ -58,6 +65,7 @@ func runYear(year int, day int) {
 	}
 }
 
+// runDay runs the code for the specified day and year
 func runDay(year int, day int, dayFuncs []DayFunc) {
 	if day < 1 || day > 25 {
 		fmt.Printf("Error: Invalid day. Must be between 1 and 25.\n")

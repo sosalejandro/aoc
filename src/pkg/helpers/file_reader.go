@@ -7,6 +7,12 @@ import (
 	"strings"
 )
 
+// GetLines splits a string into a slice of strings by line
+func GetLines(input string) []string {
+	return strings.Split(input, "\n")
+}
+
+// ReadInput reads a file and returns its contents as a string
 func ReadInput(input string) string {
 	// Open the file
 	file, err := os.Open(input)

@@ -152,3 +152,42 @@ func getTotalRibbonLength(boxes []*PresentBox, batchSize int) int {
 
 	return total
 }
+
+// unmeasured code
+
+//func getTotalRibbonLength(boxes []*PresentBox, batchSize int) int {
+//	ribbonCalculator := &RibbonCalculator{}
+//	return getTotalFromBatch(boxes, batchSize, func(box *PresentBox) int {
+//		ribbonLength := ribbonCalculator.GetRibbonLength(box)
+//		return ribbonLength
+//	})
+//}
+//
+//func getTotalFromBatch(boxes []*PresentBox, batchSize int, callback func(*PresentBox) int) int {
+//	var total int
+//	var wg sync.WaitGroup
+//	var mu sync.Mutex
+//
+//	for i := 0; i < len(boxes); i += batchSize {
+//		wg.Add(1)
+//		go func(start int) {
+//			defer wg.Done()
+//			end := start + batchSize
+//			if end > len(boxes) {
+//				end = len(boxes)
+//			}
+//			batchTotal := 0
+//			for j := start; j < end; j++ {
+//				box := boxes[j]
+//				batchTotal += callback(box)
+//			}
+//			mu.Lock()
+//			total += batchTotal
+//			mu.Unlock()
+//		}(i)
+//	}
+//
+//	wg.Wait()
+//
+//	return total
+//}

@@ -12,7 +12,6 @@ func TestFloor_ReadFloorInstructions(t *testing.T) {
 		args args
 		want Floor
 	}{
-		// TODO: Add test cases.
 		{
 			name: "Test 1",
 			f:    CreateFloor(),
@@ -106,7 +105,6 @@ func TestFloor_ReadFloorInstructions2(t *testing.T) {
 		args args
 		want int
 	}{
-		// TODO: Add test cases.
 		{
 			name: "Test 1",
 			f:    CreateFloor(),

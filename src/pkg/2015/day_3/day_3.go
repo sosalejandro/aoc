@@ -85,34 +85,39 @@ func (g *Grid) GetHouse(location Location) *House {
 }
 
 type Deliver interface {
-	DeliverPresents()
+	DeliverPresents(*House)
+	GetLocation() *Location
 }
 
-// PackageDeliverer delivers presents to the houses in the grid.
-type PackageDeliverer struct {
+// PackageDeliver delivers presents to the houses in the grid.
+type PackageDeliver struct {
 	location *Location
 }
 
 // DeliverPresents delivers presents to the houses in the grid.
-func (s *PackageDeliverer) DeliverPresents(h *House) {
+func (s *PackageDeliver) DeliverPresents(h *House) {
 	h.DeliverPresents()
+}
+
+// GetLocation returns the location of the package deliverer.
+func (s *PackageDeliver) GetLocation() *Location {
+	return s.location
 }
 
 // ParseGrid parses the grid from the input.
 func (g *Grid) ParseGrid(input string) {
-	currentLocation := Location{0, 0}
-	currentHouse := CreateHouse(currentLocation)
-	currentHouse.DeliverPresents()
+	currentHouse := CreateHouse(Location{0, 0})
+	santa := &PackageDeliver{location: &Location{0, 0}}
 	g.Houses[currentHouse.GetLocation()] = currentHouse
 
 	for _, sign := range input {
-		g.SetLocation(&currentLocation, CardinalSign(sign))
-		currentHouse = g.GetHouse(currentLocation)
+		g.SetLocation(santa.GetLocation(), CardinalSign(sign))
+		currentHouse = g.GetHouse(*santa.GetLocation())
 		if currentHouse == nil {
-			currentHouse = CreateHouse(currentLocation)
+			currentHouse = CreateHouse(*santa.GetLocation())
 			g.Houses[currentHouse.GetLocation()] = currentHouse
 		}
-		currentHouse.DeliverPresents()
+		santa.DeliverPresents(currentHouse)
 	}
 }
 
@@ -121,25 +126,24 @@ func (g *Grid) ParseGrid2(input string) {
 	currentHouse := CreateHouse(Location{0, 0})
 	g.Houses[currentHouse.GetLocation()] = currentHouse
 
-	santa := &PackageDeliverer{location: &Location{0, 0}}
+	santa := &PackageDeliver{location: &Location{0, 0}}
 	santa.DeliverPresents(currentHouse)
 
-	robotSanta := &PackageDeliverer{location: &Location{0, 0}}
+	robotSanta := &PackageDeliver{location: &Location{0, 0}}
 	robotSanta.DeliverPresents(currentHouse)
 
-	deliverPackageAtLocation := func(deliverer *PackageDeliverer, sign CardinalSign) {
-		g.SetLocation(deliverer.location, sign)
-		currentHouse = g.GetHouse(*deliverer.location)
+	deliverPackageAtLocation := func(delivery Deliver, sign CardinalSign) {
+		g.SetLocation(delivery.GetLocation(), sign)
+		currentHouse = g.GetHouse(*delivery.GetLocation())
 		if currentHouse == nil {
-			currentHouse = CreateHouse(*deliverer.location)
-			g.Houses[deliverer.location.String()] = currentHouse
+			currentHouse = CreateHouse(*delivery.GetLocation())
+			g.Houses[delivery.GetLocation().String()] = currentHouse
 		}
-		deliverer.DeliverPresents(currentHouse)
+		delivery.DeliverPresents(currentHouse)
 	}
 
 	for i, sign := range input {
-		ind := i + 1
-		if ind%2 == 0 {
+		if ind := i + 1; ind%2 == 0 {
 			deliverPackageAtLocation(robotSanta, CardinalSign(sign))
 			continue
 		}
